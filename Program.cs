@@ -1,3 +1,4 @@
+using Spectre.Console;
 using WebDav;
 
 namespace WebDavSync;
@@ -15,7 +16,7 @@ static class Program {
 	static async Task<int> Main (string remoteUrl, string? username, string? password, string? netrc, string output = ".")
 	{
 		if (!Directory.Exists (output)) {
-			Console.WriteLine ($"Output directory '{output}' does not exist.");
+			AnsiConsole.MarkupLine ($"[bold red]ERROR:[/] Output directory '{output}' does not exist.");
 			return 1;
 		}
 
@@ -30,7 +31,8 @@ static class Program {
 			return await Synchronize (uri, parameters, output);
 		}
 		catch (Exception e) {
-			Console.WriteLine ($"FATAL EXCEPTION: {e}");
+			AnsiConsole.Markup ("[bold red]FATAL EXCEPTION:[/] ");
+			AnsiConsole.WriteException (e);
 			return 1;
 		}
 	}
@@ -59,7 +61,7 @@ static class Program {
 					}
 				}
 			} else {
-				Console.WriteLine ($"Error #{result.StatusCode} querying {dir}");
+				AnsiConsole.MarkupLine ($"[bold red]ERROR #{result.StatusCode}:[/] Querying remote '{dir}'.");
 			}
 		}
 
@@ -67,14 +69,14 @@ static class Program {
 			// check if file exists locally, unescaping the path (e.g. %20 -> ' ')
 			var path = Uri.UnescapeDataString (Path.Combine (output, file [1..]));
 			if (File.Exists (path)) {
-				Console.WriteLine ($"{path} exists locally");
+				AnsiConsole.MarkupLine ($"✅ File [green]'{file}'[/] exists locally.");
 			} else {
 				var dir = Path.GetDirectoryName (path);
 				if (dir is not null)
 					Directory.CreateDirectory (dir);
 				using var response = await client.GetRawFile (file);
 				response.Stream.CopyTo (File.OpenWrite (path));
-				Console.WriteLine ($"{path} downloaded");
+				AnsiConsole.MarkupLine ($"📥 File [blue]'{file}'[/] was downloaded.");
 			}
 		}
 		return 0;
