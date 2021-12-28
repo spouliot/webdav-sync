@@ -11,7 +11,7 @@ static class Program {
 	/// <param name="remoteUrl">Remote URL to synchronize locally.</param>
 	/// <param name="username">Username for authentication. If not provided the `.netrc` file will be used.</param>
 	/// <param name="password">Password for authentication.</param>
-	/// <param name="netrc">(Optional) Location of the `.netrc` file to use. Any `user-name` and `password` (if supplied) will have priority over this argument.</param>
+	/// <param name="netrc">(Optional) Location of the `.netrc` file to use. Any `username` and `password` (if supplied) will have priority over this argument.</param>
 	/// <param name="output">Local directory where files missing files will be downloaded. Existing files won't be updated or deleted.</param>
 	static async Task<int> Main (string remoteUrl, string? username, string? password, string? netrc, string output = ".")
 	{
