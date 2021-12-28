@@ -1,9 +1,9 @@
 using System.Net;
 using WebDav;
 
-var uri = new Uri (args [0]);
+Uri uri = new (args [0]);
 
-var parameters = new WebDavClientParams {
+WebDavClientParams parameters = new () {
 	BaseAddress = uri,
 	Credentials = new NetworkCredential (args [1], args [2])
 };
@@ -13,10 +13,10 @@ if (!Directory.Exists (local)) {
 	return 1;
 }
 
-using var client = new WebDavClient (parameters);
+using WebDavClient client = new (parameters);
 
-var files = new List<string> ();
-var dirs = new Queue<string> ();
+List<string> files = new ();
+Queue<string> dirs = new ();
 dirs.Enqueue (uri.AbsolutePath);
 
 while (dirs.Count > 0) {
